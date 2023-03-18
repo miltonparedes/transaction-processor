@@ -1,0 +1,99 @@
+---
+title: "Transaction Summary"
+preheader: "Your transaction summary is ready."
+plaintext: true
+bodyClass: bg-slate-50
+---
+
+<x-main>
+  <fill:template>
+    <div class="bg-slate-50 sm:px-4 font-sans">
+      <table align="center">
+        <tr>
+          <td class="w-[552px] max-w-full">
+            <div class="my-12 sm:my-8 text-center">
+              <a href="https://storicard.com">
+                <img src="https://s4-recruiting.cdn.greenhouse.io/external_greenhouse_job_boards/logos/400/560/600/resized/LogoStori-azul_Horizontal_-_Copy_(2).png?1634748631" alt="StoriCard">
+              </a>
+            </div>
+
+            <table class="w-full">
+              <tr>
+                <td class="p-12 sm:px-6 text-base text-slate-700 bg-white rounded shadow-sm">
+                  <h1 class="m-0 mb-6 text-2xl sm:leading-8 text-black font-semibold">
+                    Hello,
+                  </h1>
+                  <p class="m-0 leading-6">
+                    This is the summary of your transactions
+                  </p>
+                  <x-spacer height="40px" />
+                  <h3>Total amount: {{total}}</h3>
+                  <h3>Total transactions: {{count}}</h3>
+                  <div class="relative overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500">
+                      <thead class="text-xs text-gray-700 bg-gray-50">
+                        <tr>
+                          <td class="px-6 py-3"></td>
+                          <td class="font-bold px-6 py-3">Transactions</td>
+                          <td class="font-bold px-6 py-3">Total</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="bg-white border-b">
+                          <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Credit</td>
+                          <td class="px-6 py-4">{{credit.count}}</td>
+                          <td class="px-6 py-4">{{credit.total}}</td>
+                        </tr>
+                        <tr class="bg-white border-b">
+                          <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Debit</td>
+                          <td class="px-6 py-4">{{debit.count}}</td>
+                          <td class="px-6 py-4">{{debit.total}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <span class="w-full block mt-10 p-0.5 bg-gray-200"></span>
+                  <x-spacer height="30px" />
+                  <h4>Detail per month</h4>
+                  <div class="opacity-80">
+                    {{#each monthly_summaries}}
+                      <div class="relative overflow-x-auto mt-4">
+                        <table class="w-full text-sm text-left text-gray-500">
+                          <thead class="text-xs text-gray-700 bg-gray-50">
+                            <tr>
+                              <td class="px-6 py-3">{{month}}</td>
+                              <td class="font-bold px-6 py-3">Transactions</td>
+                              <td class="font-bold px-6 py-3">Total</td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="bg-white border-b">
+                              <td class="px-6 py-4">Credit</td>
+                              <td class="px-6 py-4">{{credit.count}}</td>
+                              <td class="px-6 py-4">${{credit.total}}</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                              <td class="px-6 py-4">Debit</td>
+                              <td class="px-6 py-4">{{credit.count}}</td>
+                              <td class="px-6 py-4">${{credit.total}}</td>
+                            </tr>
+                            <tr class="bg-white border-b">
+                              <td class="px-6 py-4">Totals</td>
+                              <td class="px-6 py-4">{{count}}</td>
+                              <td class="px-6 py-4">{{total}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <x-spacer height="12px" />
+                    {{/each}}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </fill:template>
+</x-main>
