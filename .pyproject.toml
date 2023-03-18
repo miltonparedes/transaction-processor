@@ -1,0 +1,18 @@
+[tool.black]
+line-length = 88
+exclude = '''
+/(
+    \.git
+  | venv
+  | \.venv
+  | **/tests/
+)/
+'''
+
+[tool.isort]
+line_length = 88
+known_framework = ['boto3', 'pytest']
+known_first_party = ['app','ses','conf','lib']
+multi_line_output = 3
+include_trailing_comma = true
+sections = ['FUTURE','STDLIB','FRAMEWORK','THIRDPARTY','FIRSTPARTY','LOCALFOLDER']
