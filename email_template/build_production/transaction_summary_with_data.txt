@@ -1,0 +1,48 @@
+Transaction Summary
+
+Your transaction summary is ready.
+
+https://storicard.com
+
+Hello,
+
+This is the summary of your transactions
+
+‍
+Total amount: {{total}}
+Total transactions: {{count}}
+
+Transactions
+Total
+
+Credit
+{{credit.count}}
+{{credit.total}}
+
+Debit
+{{debit.count}}
+{{debit.total}}
+
+‍
+Detail per month
+
+{{#each monthly_summaries}}
+
+{{month}}
+Transactions
+Total
+
+Credit
+{{credit.count}}
+${{credit.total}}
+
+Debit
+{{credit.count}}
+${{credit.total}}
+
+Totals
+{{count}}
+{{total}}
+
+‍
+{{/each}}
