@@ -1,0 +1,63 @@
+name: Deploy to AWS Lambda
+
+on:
+  workflow_run:
+    workflows: ["Test Lambda Function"]
+    types:
+      - completed
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install aws-sam-cli
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ vars.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      run: |
+        aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+
+    - name: Create ECR repository if not exists
+      run: |
+        aws ecr describe-repositories --repository-names transaction_processor || aws ecr create-repository --repository-name transaction_processor
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t transaction_processor:${{ github.sha }} .
+        docker tag transaction_processor:${{ github.sha }} ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/transaction_processor:${{ github.sha }}
+        docker push ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/transaction_processor:${{ github.sha }}
+
+    - name: Set image tag as commit SHA and update template.yaml
+      run: |
+        export COMMIT_SHA="${{ github.sha }}"
+        sed -i "s#ACCOUNT_ID_REGION_PLACEHOLDER#${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com#g" template.yaml
+        sed -i "s#IMAGE_TAG_PLACEHOLDER#$COMMIT_SHA#g" template.yaml
+
+
+    - name: Deploy with AWS SAM
+      run: |
+        sam deploy --template-file template.yaml --stack-name transaction_processor-stack --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset --image-repository ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/transaction_processor
