@@ -7,5 +7,8 @@
     },
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "yaml.schemas": {
+      "https://raw.githubusercontent.com/aws/serverless-application-model/main/samtranslator/schema/schema.json": "file:///Users/milton/Workspaces/Personal/transaction-processor/template.yaml"
+    }
 }

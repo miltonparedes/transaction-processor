@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Transaction file processor to an email
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+    Tracing: Active
+
+Resources:
+  TransactionsToEmailFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageUri: ACCOUNT_ID_REGION_PLACEHOLDER/transaction-process:IMAGE_TAG_PLACEHOLDER
+      Policies:
+        - AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+        - arn:aws:iam::aws:policy/AmazonSESFullAccess
+      Architectures:
+      - x86_64
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+            Bucket: !Ref TransactionsFilesS3Bucket
+            Events: s3:ObjectCreated:*
+  TransactionsFilesS3Bucket:
+    Type: AWS::S3::Bucket
+  TransactionsDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Transactions
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+Outputs:
+  TransactionEmailProcessorFilesS3Bucket:
+    Description: Transaction files to be converted to an email
+    Value: !Ref TransactionsFilesS3Bucket
