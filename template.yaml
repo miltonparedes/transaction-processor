@@ -13,7 +13,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
-      ImageUri: ACCOUNT_ID_REGION_PLACEHOLDER/transaction-process:IMAGE_TAG_PLACEHOLDER
+      ImageUri: ACCOUNT_ID_REGION_PLACEHOLDER/transaction_processor:IMAGE_TAG_PLACEHOLDER
       Policies:
         - AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
